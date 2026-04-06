@@ -1,0 +1,28 @@
+{
+  "name": "@odin-foundation/tools",
+  "version": "0.1.0",
+  "description": "Code generation and tooling for ODIN schemas",
+  "type": "module",
+  "exports": {
+    ".": "./src/codegen.ts",
+    "./web-adapter": "./src/web-adapter.ts"
+  },
+  "bin": {
+    "odin-codegen": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "codegen": "tsx src/cli.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@odin-foundation/core": "file:../sdk/typescript"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "prettier": "^3.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.0"
+  }
+}
