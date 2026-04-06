@@ -1,0 +1,11 @@
+{
+  "loanAmount": 250000,
+  "annualRate": 0.065,
+  "termMonths": 360,
+  "monthlyPayment": 1580.17,
+  "premium": 12475.50,
+  "discountRate": 0.15,
+  "investmentPV": 100000,
+  "growthRate": 0.08,
+  "years": 10
+}

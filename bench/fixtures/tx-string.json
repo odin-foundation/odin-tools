@@ -1,0 +1,11 @@
+{
+  "firstName": "john",
+  "lastName": "smith",
+  "email": "JOHN.SMITH@EXAMPLE.COM",
+  "phone": "5125551234",
+  "ssn": "123456789",
+  "address": "  123 main street  ",
+  "city": "new york",
+  "state": "tx",
+  "notes": "The quick brown fox jumps over the lazy dog"
+}

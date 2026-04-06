@@ -1,0 +1,11 @@
+{
+  "age": 35,
+  "income": 85000,
+  "creditScore": 720,
+  "state": "TX",
+  "vehicleType": "sedan",
+  "hasAccidents": false,
+  "yearsLicensed": 12,
+  "middleName": null,
+  "nickname": ""
+}

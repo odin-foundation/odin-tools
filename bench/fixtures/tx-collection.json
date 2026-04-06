@@ -1,0 +1,12 @@
+{
+  "scores": [85, 92, 78, 95, 88, 72, 90, 83, 97, 76],
+  "names": ["Charlie", "Alice", "Bob", "Eve", "Dave"],
+  "tags": ["alpha", "beta", "alpha", "gamma", "beta", "delta", "alpha"],
+  "matrix": [[1,2,3],[4,5,6],[7,8,9]],
+  "coverages": [
+    {"type": "liability", "status": "active", "limit": 100000},
+    {"type": "collision", "status": "active", "limit": 50000},
+    {"type": "comprehensive", "status": "cancelled", "limit": 50000},
+    {"type": "medical", "status": "active", "limit": 25000}
+  ]
+}
