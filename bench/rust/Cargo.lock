@@ -135,7 +135,7 @@ dependencies = [
 
 [[package]]
 name = "odin-core"
-version = "1.0.5"
+version = "1.0.6"
 dependencies = [
  "crc32fast",
  "itoa",
