@@ -17,7 +17,7 @@ import type { SchemaField } from '@odin-foundation/core';
 import type { ParsedSchemaFile } from '../types.js';
 import {
   typeNameToInterface, toSafePropertyName,
-  resolveType
+  resolveType, fieldIdentifier
 } from '../codegen.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -33,11 +33,11 @@ const RUST_KEYWORDS = new Set([
 ]);
 
 function toSnakeCase(str: string): string {
-  return str.replace(/([a-z])([A-Z])/g, '$1_$2').replace(/[-]/g, '_').toLowerCase();
+  return fieldIdentifier(str, 'snake');
 }
 
 function safeRustFieldName(name: string): string {
-  const snake = toSnakeCase(name);
+  const snake = fieldIdentifier(name, 'snake');
   return RUST_KEYWORDS.has(snake) ? `r#${snake}` : snake;
 }
 

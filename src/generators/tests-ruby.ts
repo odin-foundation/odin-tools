@@ -17,7 +17,7 @@ import type { SchemaField } from '@odin-foundation/core';
 import type { ParsedSchemaFile } from '../types.js';
 import {
   typeNameToInterface, toSafePropertyName,
-  resolveType
+  resolveType, fieldIdentifier
 } from '../codegen.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -25,7 +25,7 @@ import {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function toSnakeCase(str: string): string {
-  return str.replace(/([a-z])([A-Z])/g, '$1_$2').replace(/[-]/g, '_').toLowerCase();
+  return fieldIdentifier(str, 'snake');
 }
 
 const PRIMITIVE_TYPES = new Set([

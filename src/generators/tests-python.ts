@@ -17,15 +17,23 @@ import type { SchemaField } from '@odin-foundation/core';
 import type { ParsedSchemaFile } from '../types.js';
 import {
   typeNameToInterface, toSafePropertyName,
-  resolveType
+  resolveType, fieldIdentifier
 } from '../codegen.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Utilities
 // ─────────────────────────────────────────────────────────────────────────────
 
+const PYTHON_RESERVED = new Set([
+  'and', 'as', 'assert', 'async', 'await', 'break', 'class', 'continue', 'def', 'del',
+  'elif', 'else', 'except', 'finally', 'for', 'from', 'global', 'if', 'import', 'in',
+  'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'try', 'while',
+  'with', 'yield',
+]);
+
 function toSnakeCase(str: string): string {
-  return str.replace(/([a-z])([A-Z])/g, '$1_$2').replace(/[-]/g, '_').toLowerCase();
+  const name = fieldIdentifier(str, 'snake');
+  return PYTHON_RESERVED.has(name) ? name + '_' : name;
 }
 
 const PRIMITIVE_TYPES = new Set([

@@ -351,6 +351,35 @@ export function toPascalCase(str: string): string {
   return str.split(/[-_]/).map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()).join('');
 }
 
+// Split a field name into word segments. Handles dotted paths and array
+// markers from nested sub-blocks (e.g. "rental_properties[].income.rents")
+// as well as snake_case/kebab-case. Interior capitals are preserved so the
+// helper is idempotent on already-cased identifiers.
+function fieldNameWords(name: string): string[] {
+  return name
+    .replace(/\[\]/g, '_')          // array markers act as separators
+    .split(/[.\-_]+/)               // path/word separators
+    .filter((s) => s.length > 0);
+}
+
+export type FieldIdentifierStyle = 'pascal' | 'camel' | 'snake';
+
+// Convert a field name (possibly dotted and/or containing array markers) into
+// a single valid identifier in the given style. No '.' or '[]' survives.
+// Casing of existing word characters is preserved; only word boundaries are
+// (re)cased, so passing an already-clean identifier is a no-op.
+export function fieldIdentifier(name: string, style: FieldIdentifierStyle): string {
+  const words = fieldNameWords(name);
+  if (style === 'snake') {
+    return words
+      .map((w) => w.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase())
+      .join('_');
+  }
+  const pascal = words.map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join('');
+  if (style === 'camel') return pascal.charAt(0).toLowerCase() + pascal.slice(1);
+  return pascal;
+}
+
 export function toCamelCase(str: string): string {
   const pascal = toPascalCase(str);
   return pascal.charAt(0).toLowerCase() + pascal.slice(1);
@@ -369,13 +398,42 @@ const RESERVED_WORDS = new Set([
 ]);
 
 export function toSafeIdentifier(name: string): string {
-  let safeName = toCamelCase(name.replace(/\./g, '_'));
+  let safeName = fieldIdentifier(name, 'camel');
   if (RESERVED_WORDS.has(safeName.toLowerCase())) safeName += '_';
   return safeName;
 }
 
+const JAVA_RESERVED = new Set([
+  'abstract', 'assert', 'boolean', 'break', 'byte', 'case', 'catch', 'char', 'class',
+  'const', 'continue', 'default', 'do', 'double', 'else', 'enum', 'extends', 'final',
+  'finally', 'float', 'for', 'goto', 'if', 'implements', 'import', 'instanceof', 'int',
+  'interface', 'long', 'native', 'new', 'package', 'private', 'protected', 'public',
+  'return', 'short', 'static', 'strictfp', 'super', 'switch', 'synchronized', 'this',
+  'throw', 'throws', 'transient', 'try', 'void', 'volatile', 'while',
+  'true', 'false', 'null',
+]);
+
+// camelCase Java field identifier, escaped if it collides with a keyword
+export function javaFieldName(name: string): string {
+  const id = fieldIdentifier(name, 'camel');
+  return JAVA_RESERVED.has(id) ? id + '_' : id;
+}
+
+// PascalCase stem for get/set accessors. Guards getClass(), which is final on
+// java.lang.Object and cannot be overridden.
+export function javaAccessorName(name: string): string {
+  const cap = fieldIdentifier(name, 'pascal');
+  return cap === 'Class' ? cap + '_' : cap;
+}
+
+// Package path segment from a directory name, escaped if it is a keyword.
+export function javaPackageSegment(segment: string): string {
+  const clean = segment.replace(/-/g, '_');
+  return JAVA_RESERVED.has(clean) ? clean + '_' : clean;
+}
+
 export function toSafePropertyName(name: string): string {
-  let safeName = toCamelCase(name.replace(/\./g, '_'));
+  let safeName = fieldIdentifier(name, 'camel');
   if (/^\d/.test(safeName)) safeName = '_' + safeName;
   if (RESERVED_WORDS.has(safeName.toLowerCase())) safeName += '_';
   return safeName;

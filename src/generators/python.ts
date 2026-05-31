@@ -4,10 +4,18 @@
 
 import type { SchemaFieldType } from '@odin-foundation/core';
 import type { ParsedSchemaFile, ResolvedType } from '../types.js';
-import { typeNameToInterface, getTypeNameFromRef, resolveType, toSafePropertyName } from '../codegen.js';
+import { typeNameToInterface, getTypeNameFromRef, resolveType, toSafePropertyName, fieldIdentifier } from '../codegen.js';
+
+const PYTHON_RESERVED = new Set([
+  'and', 'as', 'assert', 'async', 'await', 'break', 'class', 'continue', 'def', 'del',
+  'elif', 'else', 'except', 'finally', 'for', 'from', 'global', 'if', 'import', 'in',
+  'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'try', 'while',
+  'with', 'yield',
+]);
 
 function toSnakeCase(str: string): string {
-  return str.replace(/([a-z])([A-Z])/g, '$1_$2').replace(/[-]/g, '_').toLowerCase();
+  const name = fieldIdentifier(str, 'snake');
+  return PYTHON_RESERVED.has(name) ? name + '_' : name;
 }
 
 function odinTypeToPython(type: SchemaFieldType, localTypes: Set<string>): string {

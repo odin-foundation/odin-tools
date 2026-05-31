@@ -4,10 +4,10 @@
 
 import type { SchemaFieldType } from '@odin-foundation/core';
 import type { ParsedSchemaFile, ResolvedType } from '../types.js';
-import { typeNameToInterface, getTypeNameFromRef, resolveType } from '../codegen.js';
+import { typeNameToInterface, getTypeNameFromRef, resolveType, fieldIdentifier } from '../codegen.js';
 
 function toSnakeCase(str: string): string {
-  return str.replace(/([a-z])([A-Z])/g, '$1_$2').replace(/[-]/g, '_').toLowerCase();
+  return fieldIdentifier(str, 'snake');
 }
 
 function generateClass(resolved: ResolvedType): string {

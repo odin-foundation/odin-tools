@@ -17,7 +17,7 @@ import type { SchemaField } from '@odin-foundation/core';
 import type { ParsedSchemaFile } from '../types.js';
 import {
   typeNameToInterface, toSafePropertyName,
-  resolveType
+  resolveType, fieldIdentifier
 } from '../codegen.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -86,7 +86,7 @@ function collectTypeTestInfo(parsed: ParsedSchemaFile, allSchemas: Map<string, P
         (c): c is { kind: 'format'; format: string } => c.kind === 'format'
       );
       const enumValues = field.type.kind === 'enum' ? field.type.values : [];
-      let propName = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+      let propName = fieldIdentifier(fieldName, 'pascal');
       // Match the code generator's collision fix
       if (propName === typeNameToInterface(typeName)) propName += 'Value';
 

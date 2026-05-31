@@ -4,7 +4,7 @@
 
 import type { SchemaFieldType, SchemaField } from '@odin-foundation/core';
 import type { ParsedSchemaFile, ResolvedType } from '../types.js';
-import { typeNameToInterface, getTypeNameFromRef, resolveType, findTypeSource, calculateRelativePath } from '../codegen.js';
+import { typeNameToInterface, getTypeNameFromRef, resolveType, findTypeSource, calculateRelativePath, fieldIdentifier } from '../codegen.js';
 
 function odinTypeToCS(type: SchemaFieldType, localTypes: Set<string>): string {
   switch (type.kind) {
@@ -52,7 +52,7 @@ function generateClass(resolved: ResolvedType, localTypes: Set<string>): string 
 
     for (const attr of attrs) lines.push(attr);
 
-    let propName = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+    let propName = fieldIdentifier(fieldName, 'pascal');
     // C# doesn't allow property name == enclosing type name
     if (propName === resolved.interfaceName) propName += 'Value';
     const type = csType(field.type, field.required, field.nullable, isArray, localTypes);

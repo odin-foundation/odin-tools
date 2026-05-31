@@ -6,7 +6,7 @@ import type { SchemaFieldType, SchemaField } from '@odin-foundation/core';
 import type { ParsedSchemaFile, ResolvedType } from '../types.js';
 import {
   typeNameToInterface, getTypeNameFromRef, toSafeIdentifier, toSafePropertyName,
-  toPascalCase, toCamelCase, resolveType, findTypeSource
+  toPascalCase, toCamelCase, resolveType, findTypeSource, fieldIdentifier
 } from '../codegen.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -85,7 +85,7 @@ function generateInterface(resolved: ResolvedType, usedTypes: Set<string>): stri
 
     if (jsdocParts.length > 0) lines.push(`  /** ${jsdocParts.join(' ')} */`);
     const optionalMarker = !field.required ? '?' : '';
-    lines.push(`  ${fieldName}${optionalMarker}: ${tsType};`);
+    lines.push(`  ${fieldIdentifier(fieldName, 'camel')}${optionalMarker}: ${tsType};`);
   }
 
   lines.push('}');

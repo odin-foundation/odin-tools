@@ -4,7 +4,7 @@
 
 import type { SchemaFieldType } from '@odin-foundation/core';
 import type { ParsedSchemaFile, ResolvedType } from '../types.js';
-import { typeNameToInterface, getTypeNameFromRef, resolveType } from '../codegen.js';
+import { typeNameToInterface, getTypeNameFromRef, resolveType, fieldIdentifier } from '../codegen.js';
 
 const RUST_KEYWORDS = new Set([
   'type', 'self', 'super', 'crate', 'mod', 'fn', 'struct', 'enum', 'trait', 'impl',
@@ -14,12 +14,8 @@ const RUST_KEYWORDS = new Set([
   'priv', 'typeof', 'unsized', 'virtual', 'yield', 'try', 'union', 'as', 'in',
 ]);
 
-function toSnakeCase(str: string): string {
-  return str.replace(/([a-z])([A-Z])/g, '$1_$2').replace(/[-]/g, '_').toLowerCase();
-}
-
 function safeRustFieldName(name: string): string {
-  const snake = toSnakeCase(name);
+  const snake = fieldIdentifier(name, 'snake');
   return RUST_KEYWORDS.has(snake) ? `r#${snake}` : snake;
 }
 
