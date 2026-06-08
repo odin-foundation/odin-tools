@@ -27,6 +27,7 @@ var benchDefs = new (string Id, string Category, string Name, int Iterations)[]
     ("tx-collection",      "transform-verbs", "Collection verbs (12 mappings)",   5_000),
     ("tx-logic",           "transform-verbs", "Logic + lookup verbs (11 mappings)", 5_000),
     ("validate-schema",    "validation", "Validate doc against schema",      10_000),
+    ("validate-rich",      "validation", "Validate doc with formats + invariants", 10_000),
     ("export-json",        "export",     "toJSON on medium doc",             10_000),
     ("export-xml",         "export",     "toXML on medium doc",              10_000),
     ("export-csv",         "export",     "toCSV on tabular doc",             10_000),
@@ -82,6 +83,8 @@ var tx_logic_odin = ReadFixture("tx-logic.odin");
 var tx_logic_json = ReadFixture("tx-logic.json");
 var schemaOdin = ReadFixture("schema-simple.odin");
 var schemaDocOdin = ReadFixture("schema-doc.odin");
+var richSchemaOdin = ReadFixture("validate-rich-schema.odin");
+var richDocOdin = ReadFixture("validate-rich-doc.odin");
 var exportOdin = ReadFixture("export-doc.odin");
 
 // ─── Pre-parse ───────────────────────────────────────────────────────────────
@@ -93,6 +96,8 @@ var diffBDoc = Odin.Core.Odin.Parse(diffBOdin);
 var exportDoc = Odin.Core.Odin.Parse(exportOdin);
 var schemaDef = Odin.Core.Odin.ParseSchema(schemaOdin);
 var schemaDoc = Odin.Core.Odin.Parse(schemaDocOdin);
+var richSchemaDef = Odin.Core.Odin.ParseSchema(richSchemaOdin);
+var richSchemaDoc = Odin.Core.Odin.Parse(richDocOdin);
 
 // Pre-parse JSON sources into DynValue
 var smallSource = JsonSourceParser.Parse(smallSourceJson);
@@ -147,6 +152,7 @@ foreach (var def in benchDefs)
         "tx-collection"      => () => Odin.Core.Odin.ExecuteTransform(txCollectionTransform, txCollectionSource),
         "tx-logic"           => () => Odin.Core.Odin.ExecuteTransform(txLogicTransform, txLogicSource),
         "validate-schema"    => () => Odin.Core.Odin.Validate(schemaDoc, schemaDef),
+        "validate-rich"      => () => Odin.Core.Odin.Validate(richSchemaDoc, richSchemaDef),
         "export-json"        => () => Odin.Core.Odin.ToJson(exportDoc),
         "export-xml"         => () => Odin.Core.Odin.ToXml(exportDoc),
         "export-csv"         => () => Odin.Core.Odin.ToCsv(exportDoc),

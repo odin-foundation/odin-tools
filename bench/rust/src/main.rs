@@ -95,6 +95,8 @@ fn run_benchmarks(fixtures_dir: &Path, filter: Option<&str>) -> Vec<BenchmarkRes
     let medium_source_json = read("medium-source.json");
     let schema_odin = read("schema-simple.odin");
     let schema_doc_odin = read("schema-doc.odin");
+    let rich_schema_odin = read("validate-rich-schema.odin");
+    let rich_doc_odin = read("validate-rich-doc.odin");
     let export_odin = read("export-doc.odin");
     let tx_string_odin = read("tx-string.odin");
     let tx_string_json = read("tx-string.json");
@@ -117,6 +119,8 @@ fn run_benchmarks(fixtures_dir: &Path, filter: Option<&str>) -> Vec<BenchmarkRes
     let export_doc = Odin::parse(&export_odin).expect("parse export");
     let schema_def = Odin::parse_schema(&schema_odin).expect("parse schema");
     let schema_doc = Odin::parse(&schema_doc_odin).expect("parse schema doc");
+    let rich_schema_def = Odin::parse_schema(&rich_schema_odin).expect("parse rich schema");
+    let rich_schema_doc = Odin::parse(&rich_doc_odin).expect("parse rich doc");
 
     let warmup = 100;
 
@@ -146,6 +150,7 @@ fn run_benchmarks(fixtures_dir: &Path, filter: Option<&str>) -> Vec<BenchmarkRes
         BenchDef { id: "tx-collection", category: "transform-verbs", name: "Collection verbs (12 mappings)", iterations: 5_000 },
         BenchDef { id: "tx-logic", category: "transform-verbs", name: "Logic + lookup verbs (11 mappings)", iterations: 5_000 },
         BenchDef { id: "validate-schema", category: "validation", name: "Validate doc against schema", iterations: 10_000 },
+        BenchDef { id: "validate-rich", category: "validation", name: "Validate doc with formats + invariants", iterations: 10_000 },
         BenchDef { id: "export-json", category: "export", name: "toJSON on medium doc", iterations: 10_000 },
         BenchDef { id: "export-xml", category: "export", name: "toXML on medium doc", iterations: 10_000 },
         BenchDef { id: "export-csv", category: "export", name: "toCSV on tabular doc", iterations: 10_000 },
@@ -243,6 +248,11 @@ fn run_benchmarks(fixtures_dir: &Path, filter: Option<&str>) -> Vec<BenchmarkRes
             "validate-schema" => {
                 let doc = schema_doc.clone();
                 let schema = schema_def.clone();
+                measure(|| { let _ = Odin::validate(&doc, &schema, None); }, warmup, def.iterations)
+            }
+            "validate-rich" => {
+                let doc = rich_schema_doc.clone();
+                let schema = rich_schema_def.clone();
                 measure(|| { let _ = Odin::validate(&doc, &schema, None); }, warmup, def.iterations)
             }
             "export-json" => {

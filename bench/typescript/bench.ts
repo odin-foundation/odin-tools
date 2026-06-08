@@ -191,6 +191,12 @@ const BENCH_DEFS: BenchDef[] = [
     iterations: 10_000,
   },
   {
+    id: "validate-rich",
+    category: "validation",
+    name: "Validate doc with formats + invariants",
+    iterations: 10_000,
+  },
+  {
     id: "export-json",
     category: "export",
     name: "toJSON on medium doc",
@@ -244,6 +250,8 @@ function main() {
   const mediumSourceJson = read("medium-source.json");
   const schemaOdin = read("schema-simple.odin");
   const schemaDocOdin = read("schema-doc.odin");
+  const richSchemaOdin = read("validate-rich-schema.odin");
+  const richDocOdin = read("validate-rich-doc.odin");
   const exportOdin = read("export-doc.odin");
   const txStringOdin = read("tx-string.odin");
   const txStringJson = read("tx-string.json");
@@ -266,6 +274,8 @@ function main() {
   const exportDoc = Odin.parse(exportOdin);
   const schemaDef = Odin.parseSchema(schemaOdin);
   const schemaDoc = Odin.parse(schemaDocOdin);
+  const richSchemaDef = Odin.parseSchema(richSchemaOdin);
+  const richSchemaDoc = Odin.parse(richDocOdin);
 
   // Pre-parse JSON sources
   const smallSource = JSON.parse(smallSourceJson);
@@ -410,6 +420,13 @@ function main() {
       case "validate-schema":
         timing = measure(
           () => Odin.validate(schemaDoc, schemaDef),
+          warmup,
+          def.iterations
+        );
+        break;
+      case "validate-rich":
+        timing = measure(
+          () => Odin.validate(richSchemaDoc, richSchemaDef),
           warmup,
           def.iterations
         );

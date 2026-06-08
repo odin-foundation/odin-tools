@@ -55,6 +55,8 @@ public class BenchmarkRunner {
         String txLogicOdin = readFixture("tx-logic.odin"), txLogicJson = readFixture("tx-logic.json");
         String schemaOdin = readFixture("schema-simple.odin");
         String schemaDocOdin = readFixture("schema-doc.odin");
+        String richSchemaOdin = readFixture("validate-rich-schema.odin");
+        String richDocOdin = readFixture("validate-rich-doc.odin");
         String exportOdin = readFixture("export-doc.odin");
 
         // Pre-parse documents
@@ -65,6 +67,8 @@ public class BenchmarkRunner {
         OdinDocument exportDoc = Odin.parse(exportOdin);
         var schemaDef = SchemaParser.parse(schemaOdin);
         OdinDocument schemaDoc = Odin.parse(schemaDocOdin);
+        var richSchemaDef = SchemaParser.parse(richSchemaOdin);
+        OdinDocument richSchemaDoc = Odin.parse(richDocOdin);
 
         // Pre-parse JSON sources
         DynValue smallSource = JsonSourceParser.parse(smallSourceJson);
@@ -145,6 +149,8 @@ public class BenchmarkRunner {
         // ── Validation ──
         run("validate-schema", "validation", "Validate doc against schema", 10_000,
                 () -> ValidationEngine.validate(schemaDoc, schemaDef, null));
+        run("validate-rich", "validation", "Validate doc with formats + invariants", 10_000,
+                () -> ValidationEngine.validate(richSchemaDoc, richSchemaDef, null));
 
         // ── Export ──
         run("export-json", "export", "toJSON on medium doc", 10_000,

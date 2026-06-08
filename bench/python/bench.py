@@ -34,6 +34,7 @@ BENCH_DEFS = [
     {"id": "tx-collection", "category": "transform-verbs", "name": "Collection verbs (16 mappings)", "iterations": 5_000},
     {"id": "tx-logic", "category": "transform-verbs", "name": "Logic verbs (16 mappings)", "iterations": 5_000},
     {"id": "validate-schema", "category": "validation", "name": "Validate doc against schema", "iterations": 10_000},
+    {"id": "validate-rich", "category": "validation", "name": "Validate doc with formats + invariants", "iterations": 10_000},
     {"id": "export-json", "category": "export", "name": "toJSON on medium doc", "iterations": 10_000},
     {"id": "export-xml", "category": "export", "name": "toXML on medium doc", "iterations": 10_000},
     {"id": "export-csv", "category": "export", "name": "toCSV on tabular doc", "iterations": 10_000},
@@ -136,6 +137,8 @@ def main():
     tx_logic_json = read_fixture("tx-logic.json")
     schema_odin = read_fixture("schema-simple.odin")
     schema_doc_odin = read_fixture("schema-doc.odin")
+    rich_schema_odin = read_fixture("validate-rich-schema.odin")
+    rich_doc_odin = read_fixture("validate-rich-doc.odin")
     export_odin = read_fixture("export-doc.odin")
 
     # Pre-parse documents
@@ -152,6 +155,13 @@ def main():
     except Exception:
         schema_def = None
         schema_doc = None
+
+    try:
+        rich_schema_def = parse_schema(rich_schema_odin)
+        rich_schema_doc = odin.parse(rich_doc_odin)
+    except Exception:
+        rich_schema_def = None
+        rich_schema_doc = None
 
     # Pre-parse JSON sources
     small_source = json.loads(small_source_json)
@@ -227,6 +237,7 @@ def main():
         "tx-collection": lambda: odin.execute_transform(tx_collection_transform, tx_collection_source) if tx_collection_transform else None,
         "tx-logic": lambda: odin.execute_transform(tx_logic_transform, tx_logic_source) if tx_logic_transform else None,
         "validate-schema": lambda: odin.validate(schema_doc, schema_def) if schema_def else None,
+        "validate-rich": lambda: odin.validate(rich_schema_doc, rich_schema_def) if rich_schema_def else None,
         "export-json": lambda: odin.to_json(export_doc),
         "export-xml": lambda: odin.to_xml(export_doc),
         "export-csv": lambda: odin.to_csv(export_doc),
@@ -248,6 +259,7 @@ def main():
         # Skip benchmarks that depend on unavailable features
         skip_reasons = {
             "validate-schema": schema_def is None and "schema parser unavailable",
+            "validate-rich": rich_schema_def is None and "schema parser unavailable",
             "parse-transform": medium_transform is None and "transform parser unavailable",
             "exec-json-json": small_transform is None and "transform parser unavailable",
             "exec-json-odin": medium_transform is None and "transform parser unavailable",

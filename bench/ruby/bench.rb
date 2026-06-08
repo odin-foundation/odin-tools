@@ -35,6 +35,7 @@ BENCH_DEFS = [
   { id: "tx-collection",       category: "transform-verbs", name: "Collection verbs (16 mappings)", iterations: 5_000 },
   { id: "tx-logic",            category: "transform-verbs", name: "Logic verbs (16 mappings)",      iterations: 5_000 },
   { id: "validate-schema",     category: "validation", name: "Validate doc against schema",    iterations: 10_000 },
+  { id: "validate-rich",       category: "validation", name: "Validate doc with formats + invariants", iterations: 10_000 },
   { id: "export-json",         category: "export",     name: "toJSON on medium doc",           iterations: 10_000 },
   { id: "export-xml",          category: "export",     name: "toXML on medium doc",            iterations: 10_000 },
   { id: "export-csv",          category: "export",     name: "toCSV on tabular doc",           iterations: 10_000 },
@@ -131,6 +132,8 @@ tx_logic_odin = read_fixture(fixtures_dir, "tx-logic.odin")
 tx_logic_json = read_fixture(fixtures_dir, "tx-logic.json")
 schema_odin = read_fixture(fixtures_dir, "schema-simple.odin")
 schema_doc_odin = read_fixture(fixtures_dir, "schema-doc.odin")
+rich_schema_odin = read_fixture(fixtures_dir, "validate-rich-schema.odin")
+rich_doc_odin = read_fixture(fixtures_dir, "validate-rich-doc.odin")
 export_odin = read_fixture(fixtures_dir, "export-doc.odin")
 
 # Pre-parse documents
@@ -148,6 +151,16 @@ rescue StandardError
 end
 schema_doc = begin
   Odin.parse(schema_doc_odin)
+rescue StandardError
+  nil
+end
+rich_schema_def = begin
+  Odin.parse_schema(rich_schema_odin)
+rescue StandardError
+  nil
+end
+rich_schema_doc = begin
+  Odin.parse(rich_doc_odin)
 rescue StandardError
   nil
 end
@@ -231,6 +244,7 @@ bench_fns = {
   "tx-collection"       => tx_collection_transform ? -> { Odin.execute_transform(tx_collection_transform, tx_collection_source) } : nil,
   "tx-logic"            => tx_logic_transform ? -> { Odin.execute_transform(tx_logic_transform, tx_logic_source) } : nil,
   "validate-schema"     => schema_def && schema_doc ? -> { Odin.validate(schema_doc, schema_def) } : nil,
+  "validate-rich"       => rich_schema_def && rich_schema_doc ? -> { Odin.validate(rich_schema_doc, rich_schema_def) } : nil,
   "export-json"         => -> { Odin::Export.to_json(export_doc) },
   "export-xml"          => -> { Odin::Export.to_xml(export_doc) },
   "export-csv"          => -> { Odin::Export.to_csv(export_doc) },
