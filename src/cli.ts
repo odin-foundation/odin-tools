@@ -5,8 +5,8 @@
  * Generates typed classes, builders, and tests from .schema.odin files.
  *
  * Usage:
- *   npx tsx src/cli.ts --schemas ../../schemas --output ./output --lang typescript
- *   npx tsx src/cli.ts --schemas ../../schemas --output ./output --lang typescript --tests ./tests
+ *   npx tsx src/cli.ts --schemas node_modules/@odin-foundation/schemas --output ./output --lang typescript
+ *   npx tsx src/cli.ts --schemas node_modules/@odin-foundation/schemas --output ./output --lang typescript --tests ./tests
  */
 
 import { generateAll } from './codegen.js';

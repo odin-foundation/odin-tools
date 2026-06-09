@@ -43,41 +43,41 @@ npx tsx src/cli.ts --schemas <path> --output <path> [--tests <path>] [--lang <la
 Generate TypeScript interfaces with tests:
 
 ```bash
-npx tsx src/cli.ts --schemas ../schemas --output ./output --tests ./tests --lang typescript
+npx tsx src/cli.ts --schemas node_modules/@odin-foundation/schemas --output ./output --tests ./tests --lang typescript
 npx vitest run
 ```
 
 Generate Python dataclasses with tests:
 
 ```bash
-npx tsx src/cli.ts --schemas ../schemas --output ./output-py --tests ./tests-py --lang python
+npx tsx src/cli.ts --schemas node_modules/@odin-foundation/schemas --output ./output-py --tests ./tests-py --lang python
 python -m pytest tests-py/
 ```
 
 Generate C# classes (no tests):
 
 ```bash
-npx tsx src/cli.ts --schemas ../schemas --output ./output --lang csharp
+npx tsx src/cli.ts --schemas node_modules/@odin-foundation/schemas --output ./output --lang csharp
 ```
 
 Generate Java classes with tests:
 
 ```bash
-npx tsx src/cli.ts --schemas ../schemas --output ./output --tests ./tests --lang java
+npx tsx src/cli.ts --schemas node_modules/@odin-foundation/schemas --output ./output --tests ./tests --lang java
 # Copy to Maven project structure, then: mvn test
 ```
 
 Generate Ruby classes with tests:
 
 ```bash
-npx tsx src/cli.ts --schemas ../schemas --output ./output-rb --tests ./tests-rb --lang ruby
+npx tsx src/cli.ts --schemas node_modules/@odin-foundation/schemas --output ./output-rb --tests ./tests-rb --lang ruby
 rspec tests-rb/
 ```
 
 Generate Rust structs (tests are appended inline to source files):
 
 ```bash
-npx tsx src/cli.ts --schemas ../schemas --output ./output-rs --tests ./tests-rs --lang rust
+npx tsx src/cli.ts --schemas node_modules/@odin-foundation/schemas --output ./output-rs --tests ./tests-rs --lang rust
 # Set up Cargo project with serde dependency, generate mod.rs tree, then: cargo test
 ```
 

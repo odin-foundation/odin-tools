@@ -16,7 +16,8 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@odin-foundation/core": "file:../sdk/typescript"
+    "@odin-foundation/core": "file:../sdk/typescript",
+    "@odin-foundation/schemas": "^1.1.0"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
